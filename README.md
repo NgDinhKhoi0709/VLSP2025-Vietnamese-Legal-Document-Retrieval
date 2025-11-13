@@ -1,4 +1,4 @@
-# VLSP2025 - Vietnamese Legal Document Retrieval
+# Vietnamese Legal Document Retrieval
 
 Hệ thống truy xuất tài liệu pháp luật Việt Nam sử dụng kết hợp phương pháp Sparse (BM25) và Dense Retrieval (BGE-M3).
 
