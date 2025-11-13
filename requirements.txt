@@ -1,0 +1,9 @@
+torch
+sentence-transformers
+faiss-cpu
+rank-bm25
+underthesea
+langchain
+langchain-text-splitters
+numpy
+tqdm
