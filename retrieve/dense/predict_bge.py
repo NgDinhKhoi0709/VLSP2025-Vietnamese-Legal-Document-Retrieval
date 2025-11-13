@@ -6,16 +6,8 @@ import torch
 import faiss
 import pickle
 import numpy as np
+import argparse
 from sentence_transformers import SentenceTransformer
-
-# ====== Configuration ======
-TOPK = 100
-
-PATH_TEST = "/kaggle/input/test-vlsp/test.json"
-PATH_INDEX = "/kaggle/input/bge-bin/bge_origin"
-PATH_META = "/kaggle/working/corpus_meta.pkl"
-PATH_MODEL = "/kaggle/input/bge-m3/pytorch/default/1/checkpoint-560"
-OUTPUT_FILE = "bge_v0_results.json"
 
 
 def load_data(path_test: str, path_index: str, path_meta: str):
@@ -131,17 +123,59 @@ def save_results(output, output_file: str):
 
 def main():
     """Main function to run the prediction pipeline"""
+    parser = argparse.ArgumentParser(
+        description="Dense retrieval using BGE M3 model and FAISS index"
+    )
+    parser.add_argument(
+        "--path_test",
+        type=str,
+        required=True,
+        help="Path to test queries JSON file"
+    )
+    parser.add_argument(
+        "--path_index",
+        type=str,
+        required=True,
+        help="Path to FAISS index file"
+    )
+    parser.add_argument(
+        "--path_meta",
+        type=str,
+        required=True,
+        help="Path to corpus_meta.pkl file"
+    )
+    parser.add_argument(
+        "--path_model",
+        type=str,
+        required=True,
+        help="Path to BGE M3 model checkpoint"
+    )
+    parser.add_argument(
+        "--output_file",
+        type=str,
+        required=True,
+        help="Output file path for results JSON"
+    )
+    parser.add_argument(
+        "--topk",
+        type=int,
+        default=100,
+        help="Number of top results to retrieve (default: 100)"
+    )
+    
+    args = parser.parse_args()
+    
     # Load data
-    queries, index, meta = load_data(PATH_TEST, PATH_INDEX, PATH_META)
+    queries, index, meta = load_data(args.path_test, args.path_index, args.path_meta)
     
     # Load model
-    model, device = load_model(PATH_MODEL)
+    model, device = load_model(args.path_model)
     
     # Search and build results
-    output = search_and_build_results(queries, model, index, meta, topk=TOPK)
+    output = search_and_build_results(queries, model, index, meta, topk=args.topk)
     
     # Save results
-    save_results(output, OUTPUT_FILE)
+    save_results(output, args.output_file)
 
 
 if __name__ == "__main__":

@@ -4,11 +4,7 @@ Script to create corpus_meta.pkl from FAISS index and chunk corpus
 import json
 import pickle
 import faiss
-
-# === Đường dẫn (đổi theo dự án của bạn) ===
-PATH_INDEX = "/kaggle/input/bge-bin/bge_origin"       # index đã build sẵn
-PATH_CHUNK = "/kaggle/input/test-vlsp/chunk_corpus.json"  # corpus gốc
-OUT_META   = "/kaggle/working/corpus_meta.pkl"        # nơi lưu meta mới
+import argparse
 
 
 def create_corpus_meta(path_index: str, path_chunk: str, out_meta: str):
@@ -60,9 +56,33 @@ def create_corpus_meta(path_index: str, path_chunk: str, out_meta: str):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Create corpus_meta.pkl from FAISS index and chunk corpus"
+    )
+    parser.add_argument(
+        "--path_index",
+        type=str,
+        required=True,
+        help="Path to FAISS index file"
+    )
+    parser.add_argument(
+        "--path_chunk",
+        type=str,
+        required=True,
+        help="Path to chunk corpus JSON file"
+    )
+    parser.add_argument(
+        "--out_meta",
+        type=str,
+        required=True,
+        help="Output path for corpus_meta.pkl"
+    )
+    
+    args = parser.parse_args()
+    
     create_corpus_meta(
-        path_index=PATH_INDEX,
-        path_chunk=PATH_CHUNK,
-        out_meta=OUT_META
+        path_index=args.path_index,
+        path_chunk=args.path_chunk,
+        out_meta=args.out_meta
     )
 
